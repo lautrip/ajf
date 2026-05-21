@@ -310,9 +310,8 @@ body {
 
 .category-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 0.35rem;
-    overflow-x: auto;
-    scrollbar-width: none;
     padding-bottom: 0.1rem;
 }
 
