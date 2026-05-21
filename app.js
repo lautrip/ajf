@@ -79,12 +79,13 @@ function parseCSV(text) {
 // ==========================================================================
 // CLASSIFICATION & PARSING HELPERS
 // ==========================================================================
-function isDayHeader(col0, col1) {
+function isDayHeader(col0, col1, col2) {
     if (!col0) return false;
     const clean = col0.trim().toLowerCase();
     const startsWithWeekday = WEEKDAYS.some(day => clean.startsWith(day));
     const isCol1Empty = !col1 || col1.trim() === '';
-    return startsWithWeekday && isCol1Empty;
+    const isCol2Empty = !col2 || col2.trim() === '';
+    return startsWithWeekday && isCol1Empty && isCol2Empty;
 }
 
 function parseDate(dayStr) {
@@ -96,40 +97,38 @@ function parseDate(dayStr) {
     return new Date(year, month, day);
 }
 
-function categorizeEvent(title) {
-    const lower = title.toLowerCase();
-    if (title.includes('🛫')) {
+function categorizeEvent(emojiStr) {
+    if (!emojiStr) return 'default';
+    const lower = emojiStr.toLowerCase();
+    
+    if (lower.includes('🛫') || lower.includes('takeoff')) {
         return 'takeoff';
     }
-    if (title.includes('🛬')) {
+    if (lower.includes('🛬') || lower.includes('landing')) {
         return 'landing';
     }
-    if (lower.includes('transfer')) {
+    if (lower.includes('🚗') || lower.includes('transfer')) {
         return 'transfer';
     }
-    if (lower.includes('flight') || 
-        lower.includes('lga') || lower.includes('jfk') || 
-        lower.includes('eze') || lower.includes('airport')) {
+    if (lower.includes('✈️') || lower.includes('trip') || lower.includes('vuelo')) {
         return 'flights';
     }
-    if (lower.includes('vs.') || lower.includes('worldcup') || 
-        lower.includes('game') || lower.includes('semi-final') || 
-        lower.includes('fixtures') || lower.includes('wc ')) {
+    if (lower.includes('⚽') || lower.includes('game') || lower.includes('partido') || lower.includes('worldcup')) {
         return 'worldcup';
     }
-    if (lower.includes('meeting') || lower.includes('brief') || 
-        lower.includes('reunión') || lower.includes('reunion')) {
+    if (lower.includes('💼') || lower.includes('reunion') || lower.includes('meeting') || lower.includes('reunión')) {
         return 'meetings';
     }
-    if (lower.includes('activacion') || lower.includes('activación') || lower.includes('activation')) {
+    if (lower.includes('🎤') || lower.includes('activacion') || lower.includes('activación')) {
         return 'activacion';
     }
-    if (lower.includes('fiesta') || lower.includes('party')) {
+    if (lower.includes('🎉') || lower.includes('fiesta') || lower.includes('party')) {
         return 'fiesta';
     }
-    if (lower.includes('contenido') || lower.includes('content') || lower.includes('shoot')) {
+    if (lower.includes('📷') || lower.includes('📱') || lower.includes('contenido')) {
         return 'contenido';
     }
+    
     return 'default';
 }
 
@@ -192,10 +191,11 @@ function processCSVText(csvText) {
     for (let i = 1; i < rows.length; i++) {
         const col0 = rows[i][0] ? rows[i][0].trim() : "";
         const col1 = rows[i][1] ? rows[i][1].trim() : "";
+        const col2 = rows[i][2] ? rows[i][2].trim() : "";
         
-        if (col0 === "" && col1 === "") continue; // Skip spacers
+        if (col0 === "" && col1 === "" && col2 === "") continue; // Skip spacers
         
-        if (isDayHeader(col0, col1)) {
+        if (isDayHeader(col0, col1, col2)) {
             // Check duplicates to merge them
             const existingDay = parsedDays.find(d => d.dateStr.toLowerCase() === col0.toLowerCase());
             if (existingDay) {
@@ -209,12 +209,15 @@ function processCSVText(csvText) {
                 parsedDays.push(currentDay);
             }
         } else if (currentDay) {
-            const eventTitle = col1 !== "" ? col1 : col0;
-            const eventTime = col1 !== "" ? col0 : "";
+            // New format: col0 (Time), col1 (Emoji/Category), col2 (Event Title)
+            const eventTime = col0;
+            const emojiStr = col1;
+            // Fallback for legacy 2 column format: if col2 is empty, assume col1 is the event title
+            const eventTitle = col2 !== "" ? col2 : (col1 !== "" ? col1 : "Sin Título");
             
-            if (eventTitle === "") continue;
+            if (eventTitle === "" && eventTime === "") continue;
             
-            const category = categorizeEvent(eventTitle);
+            const category = categorizeEvent(emojiStr !== "" && col2 !== "" ? emojiStr : eventTitle);
             const id = `evt-${Math.random().toString(36).substr(2, 9)}`;
             
             currentDay.events.push({
