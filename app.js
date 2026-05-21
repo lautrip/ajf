@@ -119,8 +119,8 @@ function categorizeEvent(emojiStr) {
     if (lower.includes('💼') || lower.includes('reunion') || lower.includes('meeting') || lower.includes('reunión')) {
         return 'meetings';
     }
-    if (lower.includes('🎤') || lower.includes('activacion') || lower.includes('activación')) {
-        return 'activacion';
+    if (lower.includes('📅') || lower.includes('evento') || lower.includes('event')) {
+        return 'evento';
     }
     if (lower.includes('🎉') || lower.includes('🪩') || lower.includes('🥳') || lower.includes('fiesta') || lower.includes('party')) {
         return 'fiesta';
@@ -341,9 +341,9 @@ function renderTimeline() {
                 } else if (evt.category === 'meetings') {
                     catIcon = "💼";
                     catText = "Reunión";
-                } else if (evt.category === 'activacion') {
-                    catIcon = "🎤";
-                    catText = "Activación";
+                } else if (evt.category === 'evento') {
+                    catIcon = "📅";
+                    catText = "Evento";
                 } else if (evt.category === 'fiesta') {
                     catIcon = "🎉";
                     catText = "Fiesta";
@@ -585,11 +585,13 @@ function showEmptyState(show) {
     const empty = document.getElementById("timeline-empty");
     const list = document.getElementById("timeline-list");
     const skeleton = document.getElementById("timeline-skeleton");
+    const pillContainer = document.getElementById("status-pill-container");
     
     if (show) {
         empty.style.display = "flex";
         list.style.display = "none";
         skeleton.style.display = "none";
+        if (pillContainer) pillContainer.style.display = "none";
     } else {
         empty.style.display = "none";
     }

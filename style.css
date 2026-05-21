@@ -25,8 +25,8 @@
     --color-worldcup-glow: rgba(74, 222, 128, 0.2);
     --color-meetings: #fb923c;
     --color-meetings-glow: rgba(251, 146, 60, 0.2);
-    --color-activacion: #f43f5e;
-    --color-activacion-glow: rgba(244, 63, 94, 0.2);
+    --color-evento: #f43f5e;
+    --color-evento-glow: rgba(244, 63, 94, 0.2);
     --color-fiesta: #d946ef;
     --color-fiesta-glow: rgba(217, 70, 239, 0.2);
     --color-contenido: #06b6d4;
@@ -434,7 +434,7 @@ body {
 .event-row.cat-landing .row-category-bar { background: var(--color-flights); }
 .event-row.cat-worldcup .row-category-bar { background: var(--color-worldcup); }
 .event-row.cat-meetings .row-category-bar { background: var(--color-meetings); }
-.event-row.cat-activacion .row-category-bar { background: var(--color-activacion); }
+.event-row.cat-evento .row-category-bar { background: var(--color-evento); }
 .event-row.cat-fiesta .row-category-bar { background: var(--color-fiesta); }
 .event-row.cat-contenido .row-category-bar { background: var(--color-contenido); }
 .event-row.cat-default .row-category-bar { background: var(--color-default); }
