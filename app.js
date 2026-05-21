@@ -282,7 +282,7 @@ function renderTimeline() {
             
             const matchesCategory = STATE.filters.category === "all" || 
                                     evt.category === STATE.filters.category ||
-                                    (STATE.filters.category === "flights" && (evt.category === "takeoff" || evt.category === "landing" || evt.category === "transfer"));
+                                    (STATE.filters.category === "trip" && (evt.category === "flights" || evt.category === "takeoff" || evt.category === "landing" || evt.category === "transfer"));
             
             return matchesSearch && matchesCategory;
         });
