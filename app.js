@@ -113,8 +113,8 @@ function categorizeEvent(title) {
         return 'flights';
     }
     if (lower.includes('vs.') || lower.includes('worldcup') || 
-        lower.includes('semi-final') || lower.includes('fixtures') || 
-        lower.includes('wc ')) {
+        lower.includes('partido') || lower.includes('semi-final') || 
+        lower.includes('fixtures') || lower.includes('wc ')) {
         return 'worldcup';
     }
     if (lower.includes('meeting') || lower.includes('brief') || 
@@ -324,7 +324,7 @@ function renderTimeline() {
                     displayTitle = displayTitle.replace(/🛫|🛬/g, '').trim();
                 } else if (evt.category === 'worldcup') {
                     catIcon = "⚽";
-                    catText = "Mundial";
+                    catText = "Partido";
                     displayTitle = formatWorldcupTitle(displayTitle);
                 } else if (evt.category === 'meetings') {
                     catIcon = "💼";
@@ -498,45 +498,6 @@ function initControls() {
         fetchScheduleData();
     });
     
-    // Settings modal
-    const settingsModal = document.getElementById("settings-modal");
-    const inputSheetId = document.getElementById("input-sheet-id");
-    
-    document.getElementById("btn-settings").addEventListener("click", () => {
-        inputSheetId.value = STATE.sheetId;
-        settingsModal.style.display = "flex";
-    });
-    
-    document.getElementById("modal-close").addEventListener("click", () => {
-        settingsModal.style.display = "none";
-    });
-    
-    settingsModal.addEventListener("click", (e) => {
-        if (e.target === settingsModal) {
-            settingsModal.style.display = "none";
-        }
-    });
-    
-    document.getElementById("btn-save-settings").addEventListener("click", () => {
-        let val = inputSheetId.value.trim();
-        if (val === "") return;
-        
-        if (val.includes("docs.google.com/spreadsheets")) {
-            const matches = val.match(/\/d\/([a-zA-Z0-9-_]+)/);
-            if (matches && matches[1]) {
-                val = matches[1];
-            }
-        }
-        
-        STATE.sheetId = val;
-        localStorage.setItem("ajf_sheet_id", val);
-        settingsModal.style.display = "none";
-        fetchScheduleData();
-    });
-    
-    document.getElementById("btn-reset-default").addEventListener("click", () => {
-        inputSheetId.value = DEFAULT_SHEET_ID;
-    });
     
     // Filter status bar clear button
     document.getElementById("btn-clear-filters").addEventListener("click", () => {
