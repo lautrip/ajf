@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AJF Live Brief & Worldcup</title>
+    
+    <!-- Google Fonts: Outfit (sans) & JetBrains Mono (monospace) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Ambient subtle background glow -->
+        <div class="ambient-glow"></div>
+
+        <!-- App Header -->
+        <header class="app-header">
+            <div class="header-main">
+                <h1 id="app-title" class="app-title">AJF Live Brief</h1>
+                <div class="header-actions">
+                    <button id="btn-refresh" class="action-btn" title="Recargar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+                        </svg>
+                    </button>
+                    <button id="btn-settings" class="action-btn" title="Configurar">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.43l-1.003.828c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.99l1.005.831a1.125 1.125 0 0 1 .26 1.43l-1.297 2.247a1.125 1.125 0 0 1-1.37.491l-1.216-.456c-.356-.133-.751-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.43l1.004-.83c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.83a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.645-.869L9.59 3.94Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="header-sub">
+                <div id="live-clock" class="live-clock">--:--:--</div>
+                <div class="sync-status">
+                    <span class="pulse-dot"></span>
+                    <span class="sync-text">LIVE SYNC</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Compact State Pill (Dynamic Island Concept) -->
+        <section id="status-pill-container" class="status-pill-container">
+            <div id="status-pill" class="status-pill" title="Haga clic para ver detalles">
+                <span class="pill-dot"></span>
+                <span id="pill-content" class="pill-content">Conectando con Google Sheet...</span>
+            </div>
+        </section>
+
+        <!-- Dynamic Controls (Search & Category Filters) -->
+        <section class="controls-section">
+            <div class="search-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
+                </svg>
+                <input type="text" id="search-input" placeholder="Buscar..." autocomplete="off">
+                <button id="search-clear-btn" class="search-clear-btn">✕</button>
+            </div>
+            
+            <div class="category-tabs">
+                <button class="tab-btn active" data-category="all">Todos</button>
+                <button class="tab-btn" data-category="flights">Vuelos ✈️</button>
+                <button class="tab-btn" data-category="worldcup">Mundial ⚽</button>
+                <button class="tab-btn" data-category="meetings">Reuniones 💼</button>
+            </div>
+        </section>
+
+        <!-- Unified Timeline List -->
+        <main class="timeline-container">
+            <!-- Filter Status Info -->
+            <div class="filter-status-bar" id="filter-status" style="display: none;">
+                <span class="status-text">Filtro activo</span>
+                <button id="btn-clear-filters" class="clear-filters-btn">Limpiar</button>
+            </div>
+
+            <!-- Loading Skeleton -->
+            <div id="timeline-skeleton" class="timeline-skeleton">
+                <div class="skeleton-day-header"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-row"></div>
+                <div class="skeleton-day-header"></div>
+                <div class="skeleton-row"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="timeline-empty" class="timeline-empty-state" style="display: none;">
+                <div class="empty-icon">🔍</div>
+                <h3>Sin resultados</h3>
+                <p>Prueba cambiando los filtros o la búsqueda.</p>
+            </div>
+
+            <!-- Vertical Timeline Grouped by Days -->
+            <div id="timeline-list" class="timeline-list" style="display: none;">
+                <!-- Days and events injected dynamically here -->
+            </div>
+        </main>
+
+        <!-- Minimal Footer -->
+        <footer class="app-footer">
+            <p>AJF Schedule &bull; Actualizado en tiempo real</p>
+        </footer>
+    </div>
+
+    <!-- Configuration Modal -->
+    <div id="settings-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2>Configuración</h2>
+                <button id="modal-close" class="modal-close-btn">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <p class="modal-desc">Cambia el Google Sheet de origen para el cronograma.</p>
+                
+                <div class="form-group">
+                    <label for="input-sheet-id">ID de Google Sheet o URL</label>
+                    <input type="text" id="input-sheet-id" placeholder="ID de la planilla...">
+                </div>
+
+                <div class="tutorial-box">
+                    <h3>💡 ¿Cómo configurarlo?</h3>
+                    <ol>
+                        <li>Tu Google Sheet debe ser **pública** (Cualquier persona con el enlace puede ver).</li>
+                        <li>Pega arriba el ID o la URL completa de tu hoja de cálculo.</li>
+                        <li>Los cambios se guardan localmente en tu celular o PC.</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button id="btn-reset-default" class="btn btn-secondary">Predeterminada</button>
+                <button id="btn-save-settings" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
