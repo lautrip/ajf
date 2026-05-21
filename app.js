@@ -122,7 +122,7 @@ function categorizeEvent(emojiStr) {
     if (lower.includes('🎤') || lower.includes('activacion') || lower.includes('activación')) {
         return 'activacion';
     }
-    if (lower.includes('🎉') || lower.includes('fiesta') || lower.includes('party')) {
+    if (lower.includes('🎉') || lower.includes('🪩') || lower.includes('🥳') || lower.includes('fiesta') || lower.includes('party')) {
         return 'fiesta';
     }
     if (lower.includes('📷') || lower.includes('📱') || lower.includes('contenido')) {
