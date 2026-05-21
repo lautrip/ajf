@@ -113,13 +113,22 @@ function categorizeEvent(title) {
         return 'flights';
     }
     if (lower.includes('vs.') || lower.includes('worldcup') || 
-        lower.includes('partido') || lower.includes('semi-final') || 
+        lower.includes('game') || lower.includes('semi-final') || 
         lower.includes('fixtures') || lower.includes('wc ')) {
         return 'worldcup';
     }
     if (lower.includes('meeting') || lower.includes('brief') || 
         lower.includes('reunión') || lower.includes('reunion')) {
         return 'meetings';
+    }
+    if (lower.includes('activacion') || lower.includes('activación') || lower.includes('activation')) {
+        return 'activacion';
+    }
+    if (lower.includes('fiesta') || lower.includes('party')) {
+        return 'fiesta';
+    }
+    if (lower.includes('contenido') || lower.includes('content') || lower.includes('shoot')) {
+        return 'contenido';
     }
     return 'default';
 }
@@ -324,11 +333,20 @@ function renderTimeline() {
                     displayTitle = displayTitle.replace(/🛫|🛬/g, '').trim();
                 } else if (evt.category === 'worldcup') {
                     catIcon = "⚽";
-                    catText = "Partido";
+                    catText = "Game";
                     displayTitle = formatWorldcupTitle(displayTitle);
                 } else if (evt.category === 'meetings') {
                     catIcon = "💼";
                     catText = "Reunión";
+                } else if (evt.category === 'activacion') {
+                    catIcon = "🎤";
+                    catText = "Activación";
+                } else if (evt.category === 'fiesta') {
+                    catIcon = "🎉";
+                    catText = "Fiesta";
+                } else if (evt.category === 'contenido') {
+                    catIcon = "📷";
+                    catText = "Contenido";
                 }
                 
                 const displayTime = evt.time ? evt.time : "—";
