@@ -15,7 +15,8 @@ const STATE = {
     allEvents: [],
     filters: {
         category: "all",
-        search: ""
+        search: "",
+        person: ""
     },
     currentPillEventId: null // Id of the event highlighted in the top status pill
 };
@@ -79,6 +80,25 @@ function parseCSV(text) {
 // ==========================================================================
 // CLASSIFICATION & PARSING HELPERS
 // ==========================================================================
+function getSingleMentionedPerson(title) {
+    if (!title) return null;
+    const lowerTitle = title.toLowerCase();
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    const matched = [];
+    
+    people.forEach(person => {
+        const regex = new RegExp(`\\b${person}\\b`, 'i');
+        if (regex.test(lowerTitle)) {
+            matched.push(person);
+        }
+    });
+    
+    if (matched.length === 1) {
+        return matched[0];
+    }
+    return null;
+}
+
 function isDayHeader(col0, col1, col2) {
     if (!col0) return false;
     const clean = col0.trim().toLowerCase();
@@ -280,7 +300,7 @@ function renderTimeline() {
     
     timelineList.innerHTML = "";
     
-    const isFilterActive = STATE.filters.search !== "" || STATE.filters.category !== "all";
+    const isFilterActive = STATE.filters.search !== "" || STATE.filters.category !== "all" || STATE.filters.person !== "";
     let totalRenderedEvents = 0;
     const now = new Date();
     
@@ -296,7 +316,9 @@ function renderTimeline() {
                                     evt.category === STATE.filters.category ||
                                     (STATE.filters.category === "trip" && (evt.category === "flights" || evt.category === "takeoff" || evt.category === "landing" || evt.category === "transfer"));
             
-            return matchesSearch && matchesCategory;
+            const matchesPerson = STATE.filters.person === "" || getSingleMentionedPerson(evt.title) === STATE.filters.person;
+            
+            return matchesSearch && matchesCategory && matchesPerson;
         });
         
         // If there are matching events, render the sticky header and rows
@@ -312,9 +334,12 @@ function renderTimeline() {
                 const fullEvt = STATE.allEvents.find(e => e.id === evt.id);
                 const isLive = fullEvt && now >= fullEvt.startDate && now < fullEvt.endDate;
                 
+                // Person detection (only single mention)
+                const singlePerson = getSingleMentionedPerson(evt.title);
+                
                 const row = document.createElement("div");
                 row.id = evt.id;
-                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''}`;
+                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${singlePerson ? 'person-' + singlePerson : ''}`;
                 
                 let displayTitle = evt.title;
                 let catIcon = "📅";
@@ -378,6 +403,13 @@ function renderTimeline() {
                     </span>
                 ` : "";
                 
+                let personTagHtml = "";
+                if (singlePerson) {
+                    const capName = singlePerson.charAt(0).toUpperCase() + singlePerson.slice(1);
+                    const isActive = STATE.filters.person === singlePerson;
+                    personTagHtml = `<span class="person-tag tag-${singlePerson} ${isActive ? 'is-active-filter' : ''}">${capName}</span>`;
+                }
+                
                 row.innerHTML = `
                     <div class="row-category-bar"></div>
                     <div class="row-time">${displayTime}</div>
@@ -387,6 +419,7 @@ function renderTimeline() {
                         <div class="row-meta">
                             <span>${catText}</span>
                             ${flightLinkHtml}
+                            ${personTagHtml}
                             ${liveIndicatorHtml}
                         </div>
                     </div>
@@ -405,8 +438,11 @@ function renderTimeline() {
         if (STATE.filters.category !== "all") {
             label = `Categoría: ${STATE.filters.category.toUpperCase()}`;
         }
+        if (STATE.filters.person !== "") {
+            label = (label === "Filtro activo" ? "" : label + " + ") + `Persona: ${STATE.filters.person.toUpperCase()}`;
+        }
         if (STATE.filters.search !== "") {
-            label += (STATE.filters.category !== "all" ? " + " : "") + `"${STATE.filters.search}"`;
+            label = (label === "Filtro activo" ? "" : label + " + ") + `"${STATE.filters.search}"`;
         }
         document.getElementById("status-query").textContent = `${label} (${totalRenderedEvents})`;
     } else {
@@ -519,11 +555,31 @@ function initControls() {
         fetchScheduleData();
     });
     
-    
     // Filter status bar clear button
     document.getElementById("btn-clear-filters").addEventListener("click", () => {
         clearAllFilters();
     });
+    
+    // Person tag click event delegation
+    document.getElementById("timeline-list").addEventListener("click", (e) => {
+        const tag = e.target.closest(".person-tag");
+        if (tag) {
+            const personName = tag.textContent.trim().toLowerCase();
+            if (personName) {
+                filterByPerson(personName);
+            }
+        }
+    });
+}
+
+function filterByPerson(person) {
+    // Toggle: clear filter if same person clicked again
+    if (STATE.filters.person === person) {
+        STATE.filters.person = "";
+    } else {
+        STATE.filters.person = person;
+    }
+    renderTimeline();
 }
 
 function clearAllFilters() {
@@ -540,6 +596,7 @@ function clearAllFilters() {
     if (allTab) allTab.classList.add("active");
     
     STATE.filters.category = "all";
+    STATE.filters.person = ""; // Clear person filter
     renderTimeline();
 }
 

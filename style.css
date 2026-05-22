@@ -31,8 +31,39 @@
     --color-fiesta-glow: rgba(217, 70, 239, 0.2);
     --color-contenido: #06b6d4;
     --color-contenido-glow: rgba(6, 182, 212, 0.2);
-    --color-default: #a78bfa;
-    --color-default-glow: rgba(167, 139, 250, 0.2);
+    --color-default: #a1a1aa; /* Neutral Zinc-400 */
+    --color-default-glow: rgba(255, 255, 255, 0.03);
+
+    /* Subtle Colors for People */
+    --color-person-lautaro: #06b6d4;
+    --color-person-lautaro-bg: rgba(6, 182, 212, 0.06);
+    --color-person-lautaro-bg-hover: rgba(6, 182, 212, 0.1);
+    --color-person-lautaro-border: rgba(6, 182, 212, 0.12);
+    --color-person-lautaro-tag-border: rgba(6, 182, 212, 0.3);
+
+    --color-person-will: #22c55e;
+    --color-person-will-bg: rgba(34, 197, 94, 0.06);
+    --color-person-will-bg-hover: rgba(34, 197, 94, 0.1);
+    --color-person-will-border: rgba(34, 197, 94, 0.12);
+    --color-person-will-tag-border: rgba(34, 197, 94, 0.3);
+
+    --color-person-laureano: #a855f7;
+    --color-person-laureano-bg: rgba(168, 85, 247, 0.06);
+    --color-person-laureano-bg-hover: rgba(168, 85, 247, 0.1);
+    --color-person-laureano-border: rgba(168, 85, 247, 0.12);
+    --color-person-laureano-tag-border: rgba(168, 85, 247, 0.3);
+
+    --color-person-chango: #f97316;
+    --color-person-chango-bg: rgba(249, 115, 22, 0.06);
+    --color-person-chango-bg-hover: rgba(249, 115, 22, 0.1);
+    --color-person-chango-border: rgba(249, 115, 22, 0.12);
+    --color-person-chango-tag-border: rgba(249, 115, 22, 0.3);
+
+    --color-person-dustin: #ec4899;
+    --color-person-dustin-bg: rgba(236, 72, 153, 0.06);
+    --color-person-dustin-bg-hover: rgba(236, 72, 153, 0.1);
+    --color-person-dustin-border: rgba(236, 72, 153, 0.12);
+    --color-person-dustin-tag-border: rgba(236, 72, 153, 0.3);
 
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -94,7 +125,7 @@ body {
     left: 20%;
     width: 60%;
     height: 120px;
-    background: radial-gradient(circle, rgba(167, 139, 250, 0.05) 0%, transparent 80%);
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.02) 0%, transparent 80%);
     pointer-events: none;
     z-index: 0;
 }
@@ -121,7 +152,7 @@ body {
     font-size: 1.4rem;
     font-weight: 800;
     letter-spacing: -0.02em;
-    background: linear-gradient(135deg, #ffffff 40%, #a78bfa 100%);
+    background: linear-gradient(135deg, #ffffff 50%, #a1a1aa 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -223,8 +254,8 @@ body {
 }
 
 .status-pill.is-active {
-    border-color: rgba(167, 139, 250, 0.4);
-    box-shadow: 0 4px 15px rgba(167, 139, 250, 0.05);
+    border-color: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.03);
 }
 
 .pill-dot {
@@ -386,17 +417,15 @@ body {
     position: sticky;
     top: -1px; /* Fije con el borde superior */
     z-index: 40;
-    background: var(--bg-sticky);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    padding: 0.85rem 0.25rem 0.5rem 0.25rem;
-    border-bottom: 1px solid var(--border-subtle);
-    margin-top: 0.75rem;
+    background: #000000; /* Solid black for perfect contrast during scroll */
+    padding: 1rem 0.25rem 0.65rem 0.25rem;
+    border-bottom: 1.5px solid #27272a; /* Sharp, premium Zinc-700 divider */
+    margin-top: 1.1rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.8rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    color: var(--color-default);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: #ffffff; /* Full white */
     text-transform: uppercase;
     display: flex;
     justify-content: space-between;
@@ -557,6 +586,120 @@ body {
 .event-row.is-active-now .row-title {
     color: #ffffff;
     font-weight: 700;
+}
+
+/* Subtle Person-Specific Highlights (Maintains left indicator category-bar, styles right border and soft background tint) */
+.event-row.person-lautaro {
+    background: var(--color-person-lautaro-bg);
+    border-right: 4px solid var(--color-person-lautaro);
+    border-top: 1px solid var(--color-person-lautaro-border);
+    border-bottom: 1px solid var(--color-person-lautaro-border);
+}
+.event-row.person-lautaro:hover {
+    background: var(--color-person-lautaro-bg-hover);
+}
+
+.event-row.person-will {
+    background: var(--color-person-will-bg);
+    border-right: 4px solid var(--color-person-will);
+    border-top: 1px solid var(--color-person-will-border);
+    border-bottom: 1px solid var(--color-person-will-border);
+}
+.event-row.person-will:hover {
+    background: var(--color-person-will-bg-hover);
+}
+
+.event-row.person-laureano {
+    background: var(--color-person-laureano-bg);
+    border-right: 4px solid var(--color-person-laureano);
+    border-top: 1px solid var(--color-person-laureano-border);
+    border-bottom: 1px solid var(--color-person-laureano-border);
+}
+.event-row.person-laureano:hover {
+    background: var(--color-person-laureano-bg-hover);
+}
+
+.event-row.person-chango {
+    background: var(--color-person-chango-bg);
+    border-right: 4px solid var(--color-person-chango);
+    border-top: 1px solid var(--color-person-chango-border);
+    border-bottom: 1px solid var(--color-person-chango-border);
+}
+.event-row.person-chango:hover {
+    background: var(--color-person-chango-bg-hover);
+}
+
+.event-row.person-dustin {
+    background: var(--color-person-dustin-bg);
+    border-right: 4px solid var(--color-person-dustin);
+    border-top: 1px solid var(--color-person-dustin-border);
+    border-bottom: 1px solid var(--color-person-dustin-border);
+}
+.event-row.person-dustin:hover {
+    background: var(--color-person-dustin-bg-hover);
+}
+
+/* Person-specific Badge/Tag */
+.person-tag {
+    display: inline-flex;
+    align-items: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    margin-left: 0.25rem;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+.person-tag:hover {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+}
+
+.person-tag:active {
+    transform: scale(0.95);
+}
+
+/* Active filter state: dynamic solid background using currentColor */
+.person-tag.is-active-filter {
+    background-color: currentColor !important;
+    color: #000000 !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 10px currentColor;
+}
+
+.tag-lautaro {
+    color: var(--color-person-lautaro);
+    background: var(--color-person-lautaro-bg);
+    border: 1px solid var(--color-person-lautaro-tag-border);
+}
+
+.tag-will {
+    color: var(--color-person-will);
+    background: var(--color-person-will-bg);
+    border: 1px solid var(--color-person-will-tag-border);
+}
+
+.tag-laureano {
+    color: var(--color-person-laureano);
+    background: var(--color-person-laureano-bg);
+    border: 1px solid var(--color-person-laureano-tag-border);
+}
+
+.tag-chango {
+    color: var(--color-person-chango);
+    background: var(--color-person-chango-bg);
+    border: 1px solid var(--color-person-chango-tag-border);
+}
+
+.tag-dustin {
+    color: var(--color-person-dustin);
+    background: var(--color-person-dustin-bg);
+    border: 1px solid var(--color-person-dustin-tag-border);
 }
 
 /* ==========================================================================
