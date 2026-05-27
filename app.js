@@ -337,9 +337,12 @@ function renderTimeline() {
                 // Person detection (only single mention)
                 const singlePerson = getSingleMentionedPerson(evt.title);
                 
+                // Argentina match detection
+                const isArgentina = evt.title && evt.title.toLowerCase().includes("argentina");
+                
                 const row = document.createElement("div");
                 row.id = evt.id;
-                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${singlePerson ? 'person-' + singlePerson : ''}`;
+                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${singlePerson ? 'person-' + singlePerson : ''} ${isArgentina ? 'is-argentina' : ''}`;
                 
                 let displayTitle = evt.title;
                 let catIcon = "📅";
@@ -410,6 +413,11 @@ function renderTimeline() {
                     personTagHtml = `<span class="person-tag tag-${singlePerson} ${isActive ? 'is-active-filter' : ''}">${capName}</span>`;
                 }
                 
+                let argentinaTagHtml = "";
+                if (isArgentina) {
+                    argentinaTagHtml = `<span class="argentina-tag">🇦🇷 Argentina</span>`;
+                }
+                
                 row.innerHTML = `
                     <div class="row-category-bar"></div>
                     <div class="row-time">${displayTime}</div>
@@ -420,6 +428,7 @@ function renderTimeline() {
                             <span>${catText}</span>
                             ${flightLinkHtml}
                             ${personTagHtml}
+                            ${argentinaTagHtml}
                             ${liveIndicatorHtml}
                         </div>
                     </div>
@@ -472,7 +481,7 @@ function updateLiveHighlights() {
     const container = document.getElementById("status-pill-container");
     
     // Clear classes & state
-    pill.classList.remove("is-active", "is-active-live", "is-active-upcoming");
+    pill.classList.remove("is-active", "is-active-live", "is-active-upcoming", "is-argentina-pill");
     STATE.currentPillEventId = null;
     
     if (liveEvent) {
@@ -488,7 +497,14 @@ function updateLiveHighlights() {
             displayTitle = displayTitle.replace(/🛫|🛬/g, '').trim();
         }
         
-        pillContent.innerHTML = `🟢 <strong>AHORA:</strong> ${displayTitle} <span style="color: var(--color-worldcup)">(${diffMins}m rest.)</span>`;
+        // Argentina live highlight
+        const isArg = displayTitle && displayTitle.toLowerCase().includes("argentina");
+        if (isArg) {
+            pill.classList.add("is-argentina-pill");
+            pillContent.innerHTML = `🇦🇷 <strong>AHORA:</strong> ${displayTitle} <span style="color: var(--color-argentina)">(${diffMins}m rest.)</span>`;
+        } else {
+            pillContent.innerHTML = `🟢 <strong>AHORA:</strong> ${displayTitle} <span style="color: var(--color-worldcup)">(${diffMins}m rest.)</span>`;
+        }
         
     } else {
         container.style.display = "none";
