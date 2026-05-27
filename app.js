@@ -365,6 +365,14 @@ function renderTimeline() {
                 } else if (evt.category === 'worldcup') {
                     catIcon = "⚽";
                     catText = "Game";
+                    
+                    const venueMatch = displayTitle.match(/\(([^)]+)\)/);
+                    if (venueMatch) {
+                        const venueText = venueMatch[1].trim();
+                        catText = `Game • ${venueText}`;
+                        displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
+                    }
+                    
                     displayTitle = formatWorldcupTitle(displayTitle);
                 } else if (evt.category === 'meetings') {
                     catIcon = "💼";
@@ -495,6 +503,8 @@ function updateLiveHighlights() {
         let displayTitle = liveEvent.title;
         if (liveEvent.category === 'takeoff' || liveEvent.category === 'landing') {
             displayTitle = displayTitle.replace(/🛫|🛬/g, '').trim();
+        } else if (liveEvent.category === 'worldcup') {
+            displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
         }
         
         // Argentina live highlight
