@@ -12,6 +12,7 @@
     
     <!-- Favicon / Site Icon -->
     <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="apple-touch-icon" href="favicon.png">
 
     <!-- Custom Styles -->
     <link rel="stylesheet" href="style.css">
@@ -21,37 +22,9 @@
         <!-- Ambient subtle background glow -->
         <div class="ambient-glow"></div>
 
-        <!-- App Header -->
-        <header class="app-header">
-            <div class="header-main">
-                <h1 id="app-title" class="app-title">AJF Live Brief</h1>
-                <div class="header-actions">
-                    <button id="btn-refresh" class="action-btn" title="Recargar">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
-                        </svg>
-                    </button>
-                </div>
-            </div>
-            
-            <div class="header-sub">
-                <div id="live-clock" class="live-clock">--:--:--</div>
-                <div class="sync-status">
-                    <span class="pulse-dot"></span>
-                </div>
-            </div>
-        </header>
-
-        <!-- Compact State Pill (Dynamic Island Concept) -->
-        <section id="status-pill-container" class="status-pill-container">
-            <div id="status-pill" class="status-pill" title="Haga clic para ver detalles">
-                <span class="pill-dot"></span>
-                <span id="pill-content" class="pill-content">Conectando con Google Sheet...</span>
-            </div>
-        </section>
-
-        <!-- Dynamic Controls (Search & Category Filters) -->
-        <section class="controls-section">
+        <!-- Sticky Header & Controls Group -->
+        <div class="sticky-header-group">
+            <!-- Dynamic Controls (Search first, then other controls) -->
             <div class="search-wrapper">
                 <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.602 10.602Z" />
@@ -59,17 +32,44 @@
                 <input type="text" id="search-input" placeholder="Buscar..." autocomplete="off">
                 <button id="search-clear-btn" class="search-clear-btn">✕</button>
             </div>
-            
-            <div class="category-tabs">
-                <button class="tab-btn active" data-category="all">Todos</button>
-                <button class="tab-btn" data-category="trip">Trip ✈️</button>
-                <button class="tab-btn" data-category="worldcup">Game ⚽</button>
-                <button class="tab-btn" data-category="meetings">Reuniones 💼</button>
-                <button class="tab-btn" data-category="evento">Evento 📅</button>
-                <button class="tab-btn" data-category="fiesta">Fiesta 🎉</button>
-                <button class="tab-btn" data-category="contenido">Contenido 📷</button>
-            </div>
-        </section>
+
+            <!-- Compact State Pill (Dynamic Island Concept) -->
+            <section id="status-pill-container" class="status-pill-container">
+                <div id="status-pill" class="status-pill" title="Haga clic para ver detalles">
+                    <span class="pill-dot"></span>
+                    <span id="pill-content" class="pill-content">Conectando con Google Sheet...</span>
+                </div>
+            </section>
+
+            <section class="controls-section">
+                <div class="category-tabs">
+                    <button class="tab-btn active" data-category="all" title="Todos">🌐</button>
+                    <button class="tab-btn" data-category="trip" title="Trip">✈️</button>
+                    <button class="tab-btn" data-category="evento-ajf" title="AJF Events"><img src="carpincho.png" alt="🦫" class="tab-mascot-icon"></button>
+                    <button class="tab-btn" data-category="worldcup" title="Game">⚽</button>
+                    <button class="tab-btn" data-category="evento" title="Evento">📅</button>
+                    <button class="tab-btn" data-category="fiesta" title="Fiesta">🎉</button>
+                    <button class="tab-btn" data-category="contenido" title="Contenido">📷</button>
+                </div>
+
+                <div class="toggles-container">
+                    <div class="toggle-wrapper">
+                        <span class="toggle-label">Partidos no-ARG ⚽</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-non-arg">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-wrapper">
+                        <span class="toggle-label">Eventos rivales 👾</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-rival" checked>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </div>
 
         <!-- Unified Timeline List -->
         <main class="timeline-container">

@@ -27,6 +27,11 @@
     --color-meetings-glow: rgba(251, 146, 60, 0.2);
     --color-evento: #f43f5e;
     --color-evento-glow: rgba(244, 63, 94, 0.2);
+    --color-evento-ajf: #7dd3fc;
+    --color-evento-ajf-glow: rgba(125, 211, 252, 0.2);
+    --color-evento-ajf-bg: rgba(125, 211, 252, 0.08);
+    --color-evento-ajf-bg-hover: rgba(125, 211, 252, 0.14);
+    --color-evento-ajf-border: rgba(125, 211, 252, 0.2);
     --color-fiesta: #d946ef;
     --color-fiesta-glow: rgba(217, 70, 239, 0.2);
     --color-contenido: #06b6d4;
@@ -42,11 +47,11 @@
     --color-argentina-tag-border: rgba(117, 170, 219, 0.45);
 
     /* Subtle Colors for People */
-    --color-person-lautaro: #06b6d4;
-    --color-person-lautaro-bg: rgba(6, 182, 212, 0.06);
-    --color-person-lautaro-bg-hover: rgba(6, 182, 212, 0.1);
-    --color-person-lautaro-border: rgba(6, 182, 212, 0.12);
-    --color-person-lautaro-tag-border: rgba(6, 182, 212, 0.3);
+    --color-person-lautaro: #fbbf24;
+    --color-person-lautaro-bg: rgba(251, 191, 36, 0.06);
+    --color-person-lautaro-bg-hover: rgba(251, 191, 36, 0.1);
+    --color-person-lautaro-border: rgba(251, 191, 36, 0.12);
+    --color-person-lautaro-tag-border: rgba(251, 191, 36, 0.3);
 
     --color-person-will: #22c55e;
     --color-person-will-bg: rgba(34, 197, 94, 0.06);
@@ -71,6 +76,13 @@
     --color-person-dustin-bg-hover: rgba(236, 72, 153, 0.1);
     --color-person-dustin-border: rgba(236, 72, 153, 0.12);
     --color-person-dustin-tag-border: rgba(236, 72, 153, 0.3);
+
+    /* Indigo palette for multiple/joint person mentions */
+    --color-person-multiple: #6366f1;
+    --color-person-multiple-bg: rgba(99, 102, 241, 0.07);
+    --color-person-multiple-bg-hover: rgba(99, 102, 241, 0.12);
+    --color-person-multiple-border: rgba(99, 102, 241, 0.14);
+    --color-person-multiple-tag-border: rgba(99, 102, 241, 0.35);
 
     --radius-sm: 8px;
     --radius-md: 12px;
@@ -117,12 +129,26 @@ body {
     width: 100%;
     max-width: 480px;
     min-height: 100vh;
-    padding: 1.5rem 1rem 3rem 1rem;
+    padding: 0 1rem 3rem 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
     background-color: var(--bg-main);
     position: relative;
+}
+
+/* Premium sticky header group to keep navigation and controls pinned */
+.sticky-header-group {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--bg-main);
+    padding-top: 1.5rem;
+    padding-bottom: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    border-bottom: 1.5px solid var(--border-subtle);
 }
 
 /* Subtle glowing light behind the header */
@@ -375,17 +401,20 @@ body {
 }
 
 .tab-btn {
-    padding: 0.45rem 0.85rem;
+    padding: 0.5rem 0.9rem;
     border-radius: var(--radius-lg);
     background: transparent;
     border: 1px solid transparent;
     color: var(--text-muted);
     font-family: inherit;
-    font-size: 0.75rem;
+    font-size: 1.2rem;
     font-weight: 500;
     cursor: pointer;
     white-space: nowrap;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tab-btn:hover {
@@ -396,6 +425,85 @@ body {
     background: var(--bg-card-active);
     border-color: var(--border-subtle);
     color: var(--text-primary);
+}
+
+/* Premium iOS style sliding toggle switch for non-ARG matches */
+.toggles-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.15rem;
+}
+
+.toggle-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.55rem 0.75rem;
+    background: var(--bg-card);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
+}
+
+.toggle-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 38px;
+    height: 22px;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--text-dim);
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+input:checked + .slider {
+    background-color: var(--color-worldcup);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px var(--color-worldcup);
+}
+
+input:checked + .slider:before {
+    transform: translateX(16px);
+}
+
+.slider.round {
+    border-radius: 20px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
 }
 
 /* ==========================================================================
@@ -439,7 +547,7 @@ body {
 /* STICKY DAY HEADER */
 .day-header {
     position: sticky;
-    top: -1px; /* Fije con el borde superior */
+    top: 182px; /* Sticks perfectly right below the shorter sticky navigation and controls */
     z-index: 40;
     background: #000000; /* Solid black for perfect contrast during scroll */
     padding: 1rem 0.25rem 0.65rem 0.25rem;
@@ -460,7 +568,7 @@ body {
 .event-row {
     display: flex;
     align-items: flex-start;
-    padding: 0.85rem 0.5rem;
+    padding: 0.5rem 0.5rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.04);
     gap: 0.75rem;
     position: relative;
@@ -484,11 +592,15 @@ body {
 
 .event-row.cat-flights .row-category-bar,
 .event-row.cat-takeoff .row-category-bar,
-.event-row.cat-landing .row-category-bar { background: var(--color-flights); }
+.event-row.cat-landing .row-category-bar,
+.event-row.cat-hotel .row-category-bar { background: var(--color-flights); }
 .event-row.cat-worldcup .row-category-bar { background: var(--color-worldcup); }
 .event-row.cat-meetings .row-category-bar { background: var(--color-meetings); }
 .event-row.cat-evento .row-category-bar { background: var(--color-evento); }
-.event-row.cat-fiesta .row-category-bar { background: var(--color-fiesta); }
+.event-row.cat-evento-ajf .row-category-bar,
+.event-row.cat-fiesta-main .row-category-bar,
+.event-row.cat-fiesta-sister .row-category-bar { background: var(--color-evento-ajf); }
+.event-row.cat-fiesta-rival .row-category-bar { background: var(--color-fiesta); }
 .event-row.cat-contenido .row-category-bar { background: var(--color-contenido); }
 .event-row.cat-default .row-category-bar { background: var(--color-default); }
 
@@ -510,11 +622,13 @@ body {
 }
 
 .row-icon {
-    flex: 0 0 28px;
-    font-size: 1.3rem;
+    flex: 0 0 36px;
+    font-size: 2.1rem;
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 1.9rem;
+    line-height: 1;
     margin-top: -1px;
 }
 
@@ -663,6 +777,16 @@ body {
     background: var(--color-person-dustin-bg-hover);
 }
 
+.event-row.person-multiple {
+    background: var(--color-person-multiple-bg);
+    border-right: 4px solid var(--color-person-multiple);
+    border-top: 1px solid var(--color-person-multiple-border);
+    border-bottom: 1px solid var(--color-person-multiple-border);
+}
+.event-row.person-multiple:hover {
+    background: var(--color-person-multiple-bg-hover);
+}
+
 /* Person-specific Badge/Tag */
 .person-tag {
     display: inline-flex;
@@ -726,6 +850,16 @@ body {
     border: 1px solid var(--color-person-dustin-tag-border);
 }
 
+/* Inline person mentions text highlighting */
+.title-highlight-person {
+    font-weight: 700;
+}
+.title-highlight-person.person-lautaro { color: var(--color-person-lautaro); }
+.title-highlight-person.person-will { color: var(--color-person-will); }
+.title-highlight-person.person-laureano { color: var(--color-person-laureano); }
+.title-highlight-person.person-chango { color: var(--color-person-chango); }
+.title-highlight-person.person-dustin { color: var(--color-person-dustin); }
+
 /* Argentina Matches Special Highlight */
 .event-row.is-argentina {
     background: linear-gradient(90deg, var(--color-argentina-bg) 0%, rgba(255, 255, 255, 0.01) 100%);
@@ -737,6 +871,23 @@ body {
 
 .event-row.is-argentina:hover {
     background: linear-gradient(90deg, var(--color-argentina-bg-hover) 0%, rgba(255, 255, 255, 0.03) 100%);
+}
+
+/* AJF Events Special Highlight (Premium Light Blue Theme) */
+.event-row.cat-evento-ajf,
+.event-row.cat-fiesta-main,
+.event-row.cat-fiesta-sister {
+    background: linear-gradient(90deg, var(--color-evento-ajf-bg) 0%, rgba(255, 255, 255, 0.01) 100%);
+    border-right: 4px solid var(--color-evento-ajf);
+    border-top: 1px solid var(--color-evento-ajf-border);
+    border-bottom: 1px solid var(--color-evento-ajf-border);
+    box-shadow: inset 0 0 12px rgba(125, 211, 252, 0.04);
+}
+
+.event-row.cat-evento-ajf:hover,
+.event-row.cat-fiesta-main:hover,
+.event-row.cat-fiesta-sister:hover {
+    background: linear-gradient(90deg, var(--color-evento-ajf-bg-hover) 0%, rgba(255, 255, 255, 0.03) 100%);
 }
 
 /* Argentina Special Tag with pulse-border animation */
@@ -765,6 +916,44 @@ body {
         border-color: rgba(117, 170, 219, 0.85);
         box-shadow: 0 0 8px rgba(117, 170, 219, 0.35);
     }
+}
+
+/* Non-Argentina matches: smaller, less highlighted, darker font */
+.event-row.cat-worldcup:not(.is-argentina) {
+    opacity: 0.38;
+    padding: 0.65rem 0.5rem;
+}
+
+.event-row.cat-worldcup:not(.is-argentina) .row-title {
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    font-weight: 500;
+}
+
+.event-row.cat-worldcup:not(.is-argentina) .row-time {
+    font-size: 0.7rem;
+    color: var(--text-dim);
+}
+
+.event-row.cat-worldcup:not(.is-argentina) .row-icon {
+    font-size: 1.15rem;
+}
+
+.event-row.cat-worldcup:not(.is-argentina) .row-meta {
+    font-size: 0.65rem;
+}
+
+/* Parentheses tags below event titles (e.g. venues, sub-titles) */
+.row-parentheses {
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.row-parentheses:hover {
+    color: #ffffff;
+    text-decoration: underline;
 }
 
 /* ==========================================================================
@@ -1032,4 +1221,20 @@ body {
         opacity: 1;
         transform: scale(1) translateY(0);
     }
+}
+
+/* Mascot Icon styling (replaces 🦫 emoji) */
+.tab-mascot-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+    object-fit: contain;
+    vertical-align: middle;
+}
+
+.mascot-icon {
+    width: 2.2rem;
+    height: 2.2rem;
+    object-fit: contain;
+    display: inline-block;
+    vertical-align: middle;
 }

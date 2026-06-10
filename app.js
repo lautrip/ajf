@@ -16,7 +16,9 @@ const STATE = {
     filters: {
         category: "all",
         search: "",
-        person: ""
+        person: "",
+        showNonArg: false,
+        showRival: true
     },
     currentPillEventId: null // Id of the event highlighted in the top status pill
 };
@@ -81,7 +83,7 @@ function parseCSV(text) {
 // CLASSIFICATION & PARSING HELPERS
 // ==========================================================================
 function getSingleMentionedPerson(title) {
-    if (!title) return null;
+    if (!title || typeof title !== 'string') return null;
     const lowerTitle = title.toLowerCase();
     const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
     const matched = [];
@@ -99,6 +101,35 @@ function getSingleMentionedPerson(title) {
     return null;
 }
 
+function getMentionedPeople(title) {
+    if (!title || typeof title !== 'string') return [];
+    const lowerTitle = title.toLowerCase();
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    const matched = [];
+    
+    people.forEach(person => {
+        const regex = new RegExp(`\\b${person}\\b`, 'i');
+        if (regex.test(lowerTitle)) {
+            matched.push(person);
+        }
+    });
+    
+    return matched;
+}
+
+function highlightPeopleInTitle(title) {
+    if (!title || typeof title !== 'string') return "";
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    let highlightedTitle = title;
+    
+    people.forEach(person => {
+        const regex = new RegExp(`\\b(${person})\\b`, 'gi');
+        highlightedTitle = highlightedTitle.replace(regex, `<span class="title-highlight-person person-${person}">$1</span>`);
+    });
+    
+    return highlightedTitle;
+}
+
 function isDayHeader(col0, col1, col2) {
     if (!col0) return false;
     const clean = col0.trim().toLowerCase();
@@ -109,6 +140,7 @@ function isDayHeader(col0, col1, col2) {
 }
 
 function parseDate(dayStr) {
+    if (!dayStr || typeof dayStr !== 'string') return null;
     const match = dayStr.match(/(\d+)\/(\d+)/);
     if (!match) return null;
     const day = parseInt(match[1]);
@@ -139,11 +171,23 @@ function categorizeEvent(emojiStr) {
     if (lower.includes('💼') || lower.includes('reunion') || lower.includes('meeting') || lower.includes('reunión')) {
         return 'meetings';
     }
+    if (lower.includes('🎈') || lower.includes('balloon') || lower.includes('sister')) {
+        return 'fiesta-sister';
+    }
+    if (lower.includes('👾') || lower.includes('rival') || lower.includes('enemy')) {
+        return 'fiesta-rival';
+    }
+    if (lower.includes('🎉') || lower.includes('🪩') || lower.includes('🥳') || lower.includes('fiesta') || lower.includes('party') || lower.includes('main')) {
+        return 'fiesta-main';
+    }
+    if (lower.includes('🛎️') || lower.includes('hotel') || lower.includes('checkin') || lower.includes('check-in') || lower.includes('checkout') || lower.includes('check-out') || lower.includes('hospedaje')) {
+        return 'hotel';
+    }
+    if (lower.includes('🦫') || lower.includes('ajf')) {
+        return 'evento-ajf';
+    }
     if (lower.includes('📅') || lower.includes('evento') || lower.includes('event')) {
         return 'evento';
-    }
-    if (lower.includes('🎉') || lower.includes('🪩') || lower.includes('🥳') || lower.includes('fiesta') || lower.includes('party')) {
-        return 'fiesta';
     }
     if (lower.includes('📷') || lower.includes('📱') || lower.includes('contenido')) {
         return 'contenido';
@@ -153,6 +197,7 @@ function categorizeEvent(emojiStr) {
 }
 
 function formatWorldcupTitle(title) {
+    if (!title || typeof title !== 'string') return "";
     const parts = title.split(/\s+vs\.?\s+/i);
     if (parts.length === 2) {
         let teamA = parts[0].trim();
@@ -185,6 +230,15 @@ async function fetchScheduleData() {
         
     } catch (error) {
         console.error("Error al obtener Sheet:", error);
+        
+        // Auto-fallback to default ID if localStorage ID failed
+        if (STATE.sheetId !== DEFAULT_SHEET_ID) {
+            console.warn("Fallo con el ID personalizado de localStorage. Reintentando con el ID por defecto...");
+            localStorage.removeItem("ajf_sheet_id");
+            STATE.sheetId = DEFAULT_SHEET_ID;
+            return fetchScheduleData();
+        }
+        
         alert("No se pudo conectar al Google Sheet. Revisa que el ID sea correcto y que la hoja esté configurada como pública.");
         showEmptyState(true);
     } finally {
@@ -202,7 +256,10 @@ function processCSVText(csvText) {
     // Parse dynamic main title
     if (rows[0] && rows[0][0] && rows[0][0].trim() !== "" && (!rows[0][1] || rows[0][1].trim() === "")) {
         STATE.scheduleTitle = rows[0][0].trim();
-        document.getElementById("app-title").textContent = STATE.scheduleTitle;
+        const appTitle = document.getElementById("app-title");
+        if (appTitle) {
+            appTitle.textContent = STATE.scheduleTitle;
+        }
     }
     
     const parsedDays = [];
@@ -249,19 +306,31 @@ function processCSVText(csvText) {
         }
     }
     
-    // Filter out empty days
-    STATE.days = parsedDays.filter(day => day.events.length > 0);
+    // Filter out empty days and days older than yesterday
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    STATE.days = parsedDays.filter(day => {
+        if (day.events.length === 0) return false;
+        if (day.date instanceof Date && !isNaN(day.date)) {
+            return day.date >= yesterday;
+        }
+        return true;
+    });
     
     // Flatten global array for highlights calculations
     STATE.allEvents = [];
     STATE.days.forEach(day => {
         day.events.forEach(evt => {
             let startDate = null;
+            const dayDate = (day.date instanceof Date && !isNaN(day.date)) ? day.date : new Date(2026, 5, 1);
             if (evt.time && evt.time.includes(':')) {
                 const [h, m] = evt.time.split(':').map(Number);
-                startDate = new Date(day.date.getFullYear(), day.date.getMonth(), day.date.getDate(), h, m);
+                startDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), h, m);
             } else {
-                startDate = new Date(day.date.getFullYear(), day.date.getMonth(), day.date.getDate(), 0, 0);
+                startDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), 0, 0);
             }
             
             const durationMs = evt.time ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
@@ -270,7 +339,7 @@ function processCSVText(csvText) {
             STATE.allEvents.push({
                 ...evt,
                 dayStr: day.dateStr,
-                dayDate: day.date,
+                dayDate: dayDate,
                 startDate: startDate,
                 endDate: endDate
             });
@@ -314,11 +383,19 @@ function renderTimeline() {
             
             const matchesCategory = STATE.filters.category === "all" || 
                                     evt.category === STATE.filters.category ||
-                                    (STATE.filters.category === "trip" && (evt.category === "flights" || evt.category === "takeoff" || evt.category === "landing" || evt.category === "transfer"));
+                                    (STATE.filters.category === "trip" && (evt.category === "flights" || evt.category === "takeoff" || evt.category === "landing" || evt.category === "transfer" || evt.category === "hotel")) ||
+                                    (STATE.filters.category === "fiesta" && (evt.category === "fiesta-main" || evt.category === "fiesta-sister" || evt.category === "fiesta-rival")) ||
+                                    (STATE.filters.category === "evento" && (evt.category === "evento" || evt.category === "evento-ajf"));
             
-            const matchesPerson = STATE.filters.person === "" || getSingleMentionedPerson(evt.title) === STATE.filters.person;
+            const matchesPerson = STATE.filters.person === "" || getMentionedPeople(evt.title).includes(STATE.filters.person);
             
-            return matchesSearch && matchesCategory && matchesPerson;
+            const isNonArgMatch = evt.category === "worldcup" && !evt.title.toLowerCase().includes("argentina");
+            const matchesNonArg = STATE.filters.showNonArg || !isNonArgMatch;
+            
+            const isRivalMatch = evt.category === "fiesta-rival";
+            const matchesRival = STATE.filters.showRival || !isRivalMatch;
+            
+            return matchesSearch && matchesCategory && matchesPerson && matchesNonArg && matchesRival;
         });
         
         // If there are matching events, render the sticky header and rows
@@ -334,17 +411,33 @@ function renderTimeline() {
                 const fullEvt = STATE.allEvents.find(e => e.id === evt.id);
                 const isLive = fullEvt && now >= fullEvt.startDate && now < fullEvt.endDate;
                 
-                // Person detection (only single mention)
+                // Person detection & classes
                 const singlePerson = getSingleMentionedPerson(evt.title);
+                const mentionedPeople = getMentionedPeople(evt.title);
+                const isMultiplePeople = mentionedPeople.length > 1;
+                
+                let personClass = "";
+                if (singlePerson) {
+                    personClass = `person-${singlePerson}`;
+                } else if (isMultiplePeople) {
+                    personClass = "person-multiple";
+                }
                 
                 // Argentina match detection
                 const isArgentina = evt.title && evt.title.toLowerCase().includes("argentina");
                 
                 const row = document.createElement("div");
                 row.id = evt.id;
-                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${singlePerson ? 'person-' + singlePerson : ''} ${isArgentina ? 'is-argentina' : ''}`;
+                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${personClass} ${isArgentina ? 'is-argentina' : ''}`;
                 
                 let displayTitle = evt.title;
+                let parenthesesText = "";
+                const parenthesesMatch = displayTitle.match(/\(([^)]+)\)/);
+                if (parenthesesMatch) {
+                    parenthesesText = parenthesesMatch[1].trim();
+                    displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
+                }
+                
                 let catIcon = "📅";
                 let catText = "Evento";
                 
@@ -354,6 +447,16 @@ function renderTimeline() {
                 } else if (evt.category === 'transfer') {
                     catIcon = "🚗";
                     catText = "Transfer";
+                } else if (evt.category === 'hotel') {
+                    catIcon = "🛎️";
+                    const lowerTitle = evt.title.toLowerCase();
+                    if (lowerTitle.includes('checkin') || lowerTitle.includes('check-in')) {
+                        catText = "Check-in";
+                    } else if (lowerTitle.includes('checkout') || lowerTitle.includes('check-out')) {
+                        catText = "Check-out";
+                    } else {
+                        catText = "Hotel";
+                    }
                 } else if (evt.category === 'takeoff') {
                     catIcon = "🛫";
                     catText = "Vuelo";
@@ -365,24 +468,25 @@ function renderTimeline() {
                 } else if (evt.category === 'worldcup') {
                     catIcon = "⚽";
                     catText = "Game";
-                    
-                    const venueMatch = displayTitle.match(/\(([^)]+)\)/);
-                    if (venueMatch) {
-                        const venueText = venueMatch[1].trim();
-                        catText = `Game • ${venueText}`;
-                        displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
-                    }
-                    
                     displayTitle = formatWorldcupTitle(displayTitle);
                 } else if (evt.category === 'meetings') {
                     catIcon = "💼";
                     catText = "Reunión";
                 } else if (evt.category === 'evento') {
                     catIcon = "📅";
-                    catText = "Evento";
-                } else if (evt.category === 'fiesta') {
+                    catText = "Event";
+                } else if (evt.category === 'evento-ajf') {
+                    catIcon = `<img src="carpincho.png" alt="🦫" class="mascot-icon">`;
+                    catText = "AJF Event";
+                } else if (evt.category === 'fiesta-main') {
                     catIcon = "🎉";
-                    catText = "Fiesta";
+                    catText = "Main";
+                } else if (evt.category === 'fiesta-sister') {
+                    catIcon = `<img src="cerveza.png" alt="🎈" class="mascot-icon">`;
+                    catText = "Sister";
+                } else if (evt.category === 'fiesta-rival') {
+                    catIcon = "👾";
+                    catText = "Rival";
                 } else if (evt.category === 'contenido') {
                     catIcon = "📷";
                     catText = "Contenido";
@@ -403,7 +507,7 @@ function renderTimeline() {
                            class="flight-status-link" 
                            rel="noopener noreferrer" 
                            title="Consultar estado de vuelo en tiempo real en Google">
-                            Info ↗
+                           Info ↗
                         </a>
                     `;
                 }
@@ -415,10 +519,12 @@ function renderTimeline() {
                 ` : "";
                 
                 let personTagHtml = "";
-                if (singlePerson) {
-                    const capName = singlePerson.charAt(0).toUpperCase() + singlePerson.slice(1);
-                    const isActive = STATE.filters.person === singlePerson;
-                    personTagHtml = `<span class="person-tag tag-${singlePerson} ${isActive ? 'is-active-filter' : ''}">${capName}</span>`;
+                if (mentionedPeople.length > 0) {
+                    mentionedPeople.forEach(person => {
+                        const capName = person.charAt(0).toUpperCase() + person.slice(1);
+                        const isActive = STATE.filters.person === person;
+                        personTagHtml += `<span class="person-tag tag-${person} ${isActive ? 'is-active-filter' : ''}">${capName}</span>`;
+                    });
                 }
                 
                 let argentinaTagHtml = "";
@@ -426,14 +532,22 @@ function renderTimeline() {
                     argentinaTagHtml = `<span class="argentina-tag">🇦🇷 Argentina</span>`;
                 }
                 
+                let parenthesesHtml = "";
+                if (parenthesesText) {
+                    parenthesesHtml = `<a href="https://www.google.com/search?q=${encodeURIComponent(parenthesesText)}" target="_blank" class="row-parentheses" rel="noopener noreferrer" title="Buscar locación en Google"><strong>${parenthesesText}</strong></a>`;
+                }
+                
+                const highlightedTitle = highlightPeopleInTitle(displayTitle);
+                
                 row.innerHTML = `
                     <div class="row-category-bar"></div>
                     <div class="row-time">${displayTime}</div>
                     <div class="row-icon">${catIcon}</div>
                     <div class="row-info">
-                        <div class="row-title">${displayTitle}</div>
+                        <div class="row-title">${highlightedTitle}</div>
                         <div class="row-meta">
                             <span>${catText}</span>
+                            ${parenthesesHtml}
                             ${flightLinkHtml}
                             ${personTagHtml}
                             ${argentinaTagHtml}
@@ -501,10 +615,9 @@ function updateLiveHighlights() {
         const diffMins = Math.ceil((liveEvent.endDate - now) / (60 * 1000));
         
         let displayTitle = liveEvent.title;
+        displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
         if (liveEvent.category === 'takeoff' || liveEvent.category === 'landing') {
             displayTitle = displayTitle.replace(/🛫|🛬/g, '').trim();
-        } else if (liveEvent.category === 'worldcup') {
-            displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
         }
         
         // Argentina live highlight
@@ -575,11 +688,33 @@ function initControls() {
             renderTimeline();
         });
     });
-    
     // Refresh button
-    document.getElementById("btn-refresh").addEventListener("click", () => {
-        fetchScheduleData();
-    });
+    const btnRefresh = document.getElementById("btn-refresh");
+    if (btnRefresh) {
+        btnRefresh.addEventListener("click", () => {
+            fetchScheduleData();
+        });
+    }
+    
+    // Toggle non-Argentina matches
+    const toggleNonArg = document.getElementById("toggle-non-arg");
+    if (toggleNonArg) {
+        toggleNonArg.checked = STATE.filters.showNonArg;
+        toggleNonArg.addEventListener("change", (e) => {
+            STATE.filters.showNonArg = e.target.checked;
+            renderTimeline();
+        });
+    }
+    
+    // Toggle Rival events
+    const toggleRival = document.getElementById("toggle-rival");
+    if (toggleRival) {
+        toggleRival.checked = STATE.filters.showRival;
+        toggleRival.addEventListener("change", (e) => {
+            STATE.filters.showRival = e.target.checked;
+            renderTimeline();
+        });
+    }
     
     // Filter status bar clear button
     document.getElementById("btn-clear-filters").addEventListener("click", () => {
@@ -623,6 +758,20 @@ function clearAllFilters() {
     
     STATE.filters.category = "all";
     STATE.filters.person = ""; // Clear person filter
+    
+    // Reset toggle
+    const toggleNonArg = document.getElementById("toggle-non-arg");
+    if (toggleNonArg) {
+        toggleNonArg.checked = false;
+    }
+    STATE.filters.showNonArg = false;
+    
+    const toggleRival = document.getElementById("toggle-rival");
+    if (toggleRival) {
+        toggleRival.checked = true;
+    }
+    STATE.filters.showRival = true;
+    
     renderTimeline();
 }
 
@@ -638,7 +787,9 @@ function startLiveClock() {
         let str = now.toLocaleDateString('es-ES', options).toUpperCase();
         // Format layout "20 MAY • 17:12:05"
         str = str.replace(',', ' •');
-        liveClock.textContent = str;
+        if (liveClock) {
+            liveClock.textContent = str;
+        }
         
         // Recalculate highlights dynamically every minute
         if (now.getSeconds() === 0 && STATE.allEvents.length > 0) {
