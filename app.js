@@ -153,6 +153,9 @@ function categorizeEvent(emojiStr) {
     if (!emojiStr) return 'default';
     const lower = emojiStr.toLowerCase();
     
+    if (lower.includes('⚠️') || lower.includes('lobby call') || lower.includes('lobbycall')) {
+        return 'lobbycall';
+    }
     if (lower.includes('🛫') || lower.includes('takeoff')) {
         return 'takeoff';
     }
@@ -563,6 +566,9 @@ function renderTimeline() {
                 } else if (evt.category === 'comida') {
                     catIcon = "🍽️";
                     catText = "Comida";
+                } else if (evt.category === 'lobbycall') {
+                    catIcon = "⚠️";
+                    catText = "Lobby Call";
                 }
                 
                 let timeHtml = "";

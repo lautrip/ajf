@@ -40,6 +40,8 @@
     --color-freetime-glow: rgba(167, 139, 250, 0.2);
     --color-comida: #fcd34d; /* yellow-300 */
     --color-comida-glow: rgba(252, 211, 77, 0.2);
+    --color-lobbycall: #f59e0b; /* amber-500 */
+    --color-lobbycall-glow: rgba(245, 158, 11, 0.2);
     --color-default: #a1a1aa; /* Neutral Zinc-400 */
     --color-default-glow: rgba(255, 255, 255, 0.03);
 
@@ -615,6 +617,7 @@ input:checked + .slider:before {
 .event-row.cat-contenido .row-category-bar { background: var(--color-contenido); }
 .event-row.cat-freetime .row-category-bar { background: var(--color-freetime); }
 .event-row.cat-comida .row-category-bar { background: var(--color-comida); }
+.event-row.cat-lobbycall .row-category-bar { background: var(--color-lobbycall); }
 .event-row.cat-default .row-category-bar { background: var(--color-default); }
 
 /* Row columns */
