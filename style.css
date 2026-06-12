@@ -803,16 +803,11 @@ input:checked + .slider:before {
     box-shadow: 0 0 10px currentColor;
 }
 
-.tag-lautaro {
-    color: var(--color-person-lautaro);
-    background: var(--color-person-lautaro-bg);
-    border: 1px solid var(--color-person-lautaro-tag-border);
-}
-
+.tag-lautaro,
 .tag-will {
-    color: var(--color-person-will);
-    background: var(--color-person-will-bg);
-    border: 1px solid var(--color-person-will-tag-border);
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
 }
 
 .tag-laureano {
@@ -837,8 +832,6 @@ input:checked + .slider:before {
 .title-highlight-person {
     font-weight: 700;
 }
-.title-highlight-person.person-lautaro { color: var(--color-person-lautaro); }
-.title-highlight-person.person-will { color: var(--color-person-will); }
 .title-highlight-person.person-laureano { color: var(--color-person-laureano); }
 .title-highlight-person.person-chango { color: var(--color-person-chango); }
 .title-highlight-person.person-dustin { color: var(--color-person-dustin); }
