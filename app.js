@@ -300,10 +300,20 @@ function processCSVText(csvText) {
             const category = categorizeEvent(emojiStr !== "" && col2 !== "" ? emojiStr : eventTitle);
             const id = `evt-${Math.random().toString(36).substr(2, 9)}`;
             
+            // Check for end time in freetime events (e.g. "free time till 13:00 DUSTIN...")
+            const endTimeMatch = eventTitle.match(/(?:till|hasta(?: las)?|to|until)\s+(\d{1,2}:\d{2})/i);
+            let cleanedTitle = eventTitle;
+            let eventEndTime = null;
+            if (category === 'freetime' && endTimeMatch) {
+                eventEndTime = endTimeMatch[1];
+                cleanedTitle = eventTitle.replace(endTimeMatch[0], '').replace(/\s+/g, ' ').trim();
+            }
+            
             currentDay.events.push({
                 id: id,
                 time: eventTime,
-                title: eventTitle,
+                endTime: eventEndTime,
+                title: cleanedTitle,
                 category: category
             });
         }
@@ -360,8 +370,22 @@ function processCSVText(csvText) {
                 startDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), 0, 0);
             }
             
-            const durationMs = evt.time ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
-            const endDate = new Date(startDate.getTime() + durationMs);
+            let endDate = null;
+            if (evt.endTime) {
+                const endTimeVal = getTimeValue(evt.endTime);
+                if (endTimeVal !== -1 && endTimeVal !== 9999) {
+                    const endH = Math.floor(endTimeVal / 60);
+                    const endM = endTimeVal % 60;
+                    endDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), endH, endM);
+                    if (endDate < startDate) {
+                        endDate.setDate(endDate.getDate() + 1);
+                    }
+                }
+            }
+            if (!endDate) {
+                const durationMs = evt.time ? 2 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000;
+                endDate = new Date(startDate.getTime() + durationMs);
+            }
             
             STATE.allEvents.push({
                 ...evt,
@@ -455,7 +479,7 @@ function renderTimeline() {
                 
                 const row = document.createElement("div");
                 row.id = evt.id;
-                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${personClass} ${isArgentina ? 'is-argentina' : ''}`;
+                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${evt.endTime ? 'has-end-time' : ''} ${personClass} ${isArgentina ? 'is-argentina' : ''}`;
                 
                 let displayTitle = evt.title;
                 let parenthesesText = "";
@@ -522,7 +546,7 @@ function renderTimeline() {
                     catText = "Freetime";
                 }
                 
-                const displayTime = evt.time ? evt.time : "—";
+                const displayTime = evt.time ? (evt.endTime ? `${evt.time} - ${evt.endTime}` : evt.time) : "—";
                 
                 // Flight code detection
                 let flightLinkHtml = "";

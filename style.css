@@ -618,6 +618,10 @@ input:checked + .slider:before {
     letter-spacing: -0.02em;
 }
 
+.event-row.has-end-time .row-time {
+    flex: 0 0 88px;
+}
+
 .event-row.is-all-day .row-time {
     font-size: 0.8rem;
     color: var(--text-dim);
