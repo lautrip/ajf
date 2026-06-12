@@ -49,42 +49,42 @@
     --color-argentina-tag-border: rgba(117, 170, 219, 0.45);
 
     /* Subtle Colors for People */
-    --color-person-lautaro: #fbbf24;
-    --color-person-lautaro-bg: rgba(251, 191, 36, 0.06);
-    --color-person-lautaro-bg-hover: rgba(251, 191, 36, 0.1);
-    --color-person-lautaro-border: rgba(251, 191, 36, 0.12);
-    --color-person-lautaro-tag-border: rgba(251, 191, 36, 0.3);
+    --color-person-lautaro: #d5c295;
+    --color-person-lautaro-bg: rgba(213, 194, 149, 0.08);
+    --color-person-lautaro-bg-hover: rgba(213, 194, 149, 0.15);
+    --color-person-lautaro-border: rgba(213, 194, 149, 0.2);
+    --color-person-lautaro-tag-border: rgba(213, 194, 149, 0.4);
 
-    --color-person-will: #22c55e;
-    --color-person-will-bg: rgba(34, 197, 94, 0.06);
-    --color-person-will-bg-hover: rgba(34, 197, 94, 0.1);
-    --color-person-will-border: rgba(34, 197, 94, 0.12);
-    --color-person-will-tag-border: rgba(34, 197, 94, 0.3);
+    --color-person-will: #8abf9d;
+    --color-person-will-bg: rgba(138, 191, 157, 0.08);
+    --color-person-will-bg-hover: rgba(138, 191, 157, 0.15);
+    --color-person-will-border: rgba(138, 191, 157, 0.2);
+    --color-person-will-tag-border: rgba(138, 191, 157, 0.4);
 
-    --color-person-laureano: #a855f7;
-    --color-person-laureano-bg: rgba(168, 85, 247, 0.06);
-    --color-person-laureano-bg-hover: rgba(168, 85, 247, 0.1);
-    --color-person-laureano-border: rgba(168, 85, 247, 0.12);
-    --color-person-laureano-tag-border: rgba(168, 85, 247, 0.3);
+    --color-person-laureano: #bba7db;
+    --color-person-laureano-bg: rgba(187, 167, 219, 0.08);
+    --color-person-laureano-bg-hover: rgba(187, 167, 219, 0.15);
+    --color-person-laureano-border: rgba(187, 167, 219, 0.2);
+    --color-person-laureano-tag-border: rgba(187, 167, 219, 0.4);
 
-    --color-person-chango: #f97316;
-    --color-person-chango-bg: rgba(249, 115, 22, 0.06);
-    --color-person-chango-bg-hover: rgba(249, 115, 22, 0.1);
-    --color-person-chango-border: rgba(249, 115, 22, 0.12);
-    --color-person-chango-tag-border: rgba(249, 115, 22, 0.3);
+    --color-person-chango: #d9a37e;
+    --color-person-chango-bg: rgba(217, 163, 126, 0.08);
+    --color-person-chango-bg-hover: rgba(217, 163, 126, 0.15);
+    --color-person-chango-border: rgba(217, 163, 126, 0.2);
+    --color-person-chango-tag-border: rgba(217, 163, 126, 0.4);
 
-    --color-person-dustin: #ec4899;
-    --color-person-dustin-bg: rgba(236, 72, 153, 0.06);
-    --color-person-dustin-bg-hover: rgba(236, 72, 153, 0.1);
-    --color-person-dustin-border: rgba(236, 72, 153, 0.12);
-    --color-person-dustin-tag-border: rgba(236, 72, 153, 0.3);
+    --color-person-dustin: #db9eb7;
+    --color-person-dustin-bg: rgba(219, 158, 183, 0.08);
+    --color-person-dustin-bg-hover: rgba(219, 158, 183, 0.15);
+    --color-person-dustin-border: rgba(219, 158, 183, 0.2);
+    --color-person-dustin-tag-border: rgba(219, 158, 183, 0.4);
 
     /* Indigo palette for multiple/joint person mentions */
-    --color-person-multiple: #6366f1;
-    --color-person-multiple-bg: rgba(99, 102, 241, 0.07);
-    --color-person-multiple-bg-hover: rgba(99, 102, 241, 0.12);
-    --color-person-multiple-border: rgba(99, 102, 241, 0.14);
-    --color-person-multiple-tag-border: rgba(99, 102, 241, 0.35);
+    --color-person-multiple: #9ea1df;
+    --color-person-multiple-bg: rgba(158, 161, 223, 0.08);
+    --color-person-multiple-bg-hover: rgba(158, 161, 223, 0.15);
+    --color-person-multiple-border: rgba(158, 161, 223, 0.2);
+    --color-person-multiple-tag-border: rgba(158, 161, 223, 0.4);
 
     --radius-sm: 8px;
     --radius-md: 12px;
