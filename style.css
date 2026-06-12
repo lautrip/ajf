@@ -687,10 +687,12 @@ input:checked + .slider:before {
     font-weight: 400;
 }
 
+/* Event row metadata layout with wrapping support to prevent narrow squashing of addresses */
 .row-meta {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.35rem 0.6rem;
     font-size: 0.7rem;
     color: var(--text-muted);
 }
