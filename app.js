@@ -546,7 +546,16 @@ function renderTimeline() {
                     catText = "Freetime";
                 }
                 
-                const displayTime = evt.time ? (evt.endTime ? `${evt.time} - ${evt.endTime}` : evt.time) : "—";
+                let timeHtml = "";
+                if (evt.time) {
+                    if (evt.endTime) {
+                        timeHtml = `<div class="time-start">${evt.time}</div><div class="time-end">${evt.endTime}</div>`;
+                    } else {
+                        timeHtml = evt.time;
+                    }
+                } else {
+                    timeHtml = "—";
+                }
                 
                 // Flight code detection
                 let flightLinkHtml = "";
@@ -595,7 +604,7 @@ function renderTimeline() {
                 
                 row.innerHTML = `
                     <div class="row-category-bar"></div>
-                    <div class="row-time">${displayTime}</div>
+                    <div class="row-time">${timeHtml}</div>
                     <div class="row-icon">${catIcon}</div>
                     <div class="row-info">
                         <div class="row-title">${highlightedTitle}</div>
