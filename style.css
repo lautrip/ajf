@@ -577,6 +577,19 @@ input:checked + .slider:before {
     align-items: center;
 }
 
+/* Premium city badge inside day headers */
+.day-city-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--border-subtle);
+    padding: 0.15rem 0.55rem;
+    border-radius: var(--radius-lg);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
 /* LOW-PROFILE VERTICAL LIST ROWS */
 .event-row {
     display: flex;

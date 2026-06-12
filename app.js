@@ -149,6 +149,26 @@ function parseDate(dayStr) {
     return new Date(year, month, day);
 }
 
+function getCityForDate(date) {
+    if (!(date instanceof Date) || isNaN(date)) return "";
+    if (date.getMonth() === 5) {
+        const dayNum = date.getDate();
+        if (dayNum === 13 || dayNum === 14) {
+            return "DALLAS";
+        }
+        if (dayNum >= 15 && dayNum <= 17) {
+            return "KANSAS CITY";
+        }
+        if (dayNum === 18) {
+            return "KANSAS CITY ➔ DALLAS";
+        }
+        if (dayNum >= 19 && dayNum <= 29) {
+            return "DALLAS";
+        }
+    }
+    return "";
+}
+
 function categorizeEvent(emojiStr) {
     if (!emojiStr) return 'default';
     const lower = emojiStr.toLowerCase();
@@ -460,7 +480,12 @@ function renderTimeline() {
             // 1. Day Sticky Header
             const headerDiv = document.createElement("div");
             headerDiv.className = "day-header";
-            headerDiv.textContent = day.dateStr;
+            const city = getCityForDate(day.date);
+            if (city) {
+                headerDiv.innerHTML = `<span>${day.dateStr}</span><span class="day-city-label">${city}</span>`;
+            } else {
+                headerDiv.textContent = day.dateStr;
+            }
             timelineList.appendChild(headerDiv);
             
             // 2. Events Rows
