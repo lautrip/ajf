@@ -192,6 +192,9 @@ function categorizeEvent(emojiStr) {
     if (lower.includes('📷') || lower.includes('📱') || lower.includes('contenido')) {
         return 'contenido';
     }
+    if (lower.includes('🆓') || lower.includes('freetime') || lower.includes('tiempo libre') || lower.includes('free time') || lower.includes('libre')) {
+        return 'freetime';
+    }
     
     return 'default';
 }
@@ -490,6 +493,9 @@ function renderTimeline() {
                 } else if (evt.category === 'contenido') {
                     catIcon = "📷";
                     catText = "Contenido";
+                } else if (evt.category === 'freetime') {
+                    catIcon = "🆓";
+                    catText = "Freetime";
                 }
                 
                 const displayTime = evt.time ? evt.time : "—";
