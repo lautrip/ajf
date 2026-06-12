@@ -482,10 +482,12 @@ function renderTimeline() {
                 
                 // Argentina match detection
                 const isArgentina = evt.title && evt.title.toLowerCase().includes("argentina");
+                // Lobby call detection
+                const isLobbyCall = evt.title && /lobby\s*call/i.test(evt.title);
                 
                 const row = document.createElement("div");
                 row.id = evt.id;
-                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${evt.endTime ? 'has-end-time' : ''} ${personClass} ${isArgentina ? 'is-argentina' : ''}`;
+                row.className = `event-row cat-${evt.category} ${isLive ? 'is-active-now' : ''} ${evt.time === '' ? 'is-all-day' : ''} ${evt.endTime ? 'has-end-time' : ''} ${personClass} ${isArgentina ? 'is-argentina' : ''} ${isLobbyCall ? 'is-lobby-call' : ''}`;
                 
                 let displayTitle = evt.title;
                 let parenthesesText = "";

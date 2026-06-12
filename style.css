@@ -679,6 +679,10 @@ input:checked + .slider:before {
     color: var(--text-primary);
 }
 
+.event-row.is-lobby-call .row-title {
+    font-weight: 800;
+}
+
 .vs-divider {
     color: var(--text-muted);
     font-family: 'JetBrains Mono', monospace;
