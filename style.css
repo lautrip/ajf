@@ -749,47 +749,7 @@ input:checked + .slider:before {
     font-weight: 700;
 }
 
-/* Subtle Person-Specific Highlights (Maintains left indicator category-bar, styles right border and soft background tint) */
-.event-row.person-lautaro {
-    background: var(--color-person-lautaro-bg);
-    border-right: 4px solid var(--color-person-lautaro);
-    border-top: 1px solid var(--color-person-lautaro-border);
-    border-bottom: 1px solid var(--color-person-lautaro-border);
-}
-.event-row.person-lautaro:hover {
-    background: var(--color-person-lautaro-bg-hover);
-}
-
-.event-row.person-will {
-    background: var(--color-person-will-bg);
-    border-right: 4px solid var(--color-person-will);
-    border-top: 1px solid var(--color-person-will-border);
-    border-bottom: 1px solid var(--color-person-will-border);
-}
-.event-row.person-will:hover {
-    background: var(--color-person-will-bg-hover);
-}
-
-.event-row.person-laureano {
-    background: var(--color-person-laureano-bg);
-    border-right: 4px solid var(--color-person-laureano);
-    border-top: 1px solid var(--color-person-laureano-border);
-    border-bottom: 1px solid var(--color-person-laureano-border);
-}
-.event-row.person-laureano:hover {
-    background: var(--color-person-laureano-bg-hover);
-}
-
-.event-row.person-chango {
-    background: var(--color-person-chango-bg);
-    border-right: 4px solid var(--color-person-chango);
-    border-top: 1px solid var(--color-person-chango-border);
-    border-bottom: 1px solid var(--color-person-chango-border);
-}
-.event-row.person-chango:hover {
-    background: var(--color-person-chango-bg-hover);
-}
-
+/* Subtle Person-Specific Highlights (Only DUSTIN triggers highlights) */
 .event-row.person-dustin {
     background: var(--color-person-dustin-bg);
     border-right: 4px solid var(--color-person-dustin);
@@ -800,13 +760,13 @@ input:checked + .slider:before {
     background: var(--color-person-dustin-bg-hover);
 }
 
-.event-row.person-multiple {
+.event-row.person-dustin-group {
     background: var(--color-person-multiple-bg);
     border-right: 4px solid var(--color-person-multiple);
     border-top: 1px solid var(--color-person-multiple-border);
     border-bottom: 1px solid var(--color-person-multiple-border);
 }
-.event-row.person-multiple:hover {
+.event-row.person-dustin-group:hover {
     background: var(--color-person-multiple-bg-hover);
 }
 

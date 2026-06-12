@@ -462,16 +462,18 @@ function renderTimeline() {
                 const fullEvt = STATE.allEvents.find(e => e.id === evt.id);
                 const isLive = fullEvt && now >= fullEvt.startDate && now < fullEvt.endDate;
                 
-                // Person detection & classes
-                const singlePerson = getSingleMentionedPerson(evt.title);
+                // Person detection & classes (Only color rows containing DUSTIN)
                 const mentionedPeople = getMentionedPeople(evt.title);
                 const isMultiplePeople = mentionedPeople.length > 1;
-                
+                const hasDustin = mentionedPeople.includes("dustin");
+                 
                 let personClass = "";
-                if (singlePerson) {
-                    personClass = `person-${singlePerson}`;
-                } else if (isMultiplePeople) {
-                    personClass = "person-multiple";
+                if (hasDustin) {
+                    if (isMultiplePeople) {
+                        personClass = "person-dustin-group";
+                    } else {
+                        personClass = "person-dustin";
+                    }
                 }
                 
                 // Argentina match detection
