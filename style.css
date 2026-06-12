@@ -563,31 +563,31 @@ input:checked + .slider:before {
     top: 182px; /* Sticks perfectly right below the shorter sticky navigation and controls */
     z-index: 40;
     background: #000000; /* Solid black for perfect contrast during scroll */
-    padding: 1rem 0.25rem 0.65rem 0.25rem;
+    padding: 1.15rem 0.25rem 0.75rem 0.25rem;
     border-bottom: 1.5px solid #27272a; /* Sharp, premium Zinc-700 divider */
     margin-top: 1.1rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    color: #ffffff; /* Full white */
     text-transform: uppercase;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    gap: 0.25rem;
 }
 
-/* Premium city badge inside day headers */
-.day-city-label {
-    font-size: 0.72rem;
-    font-weight: 700;
+/* Date text styled subtly */
+.day-date-text {
+    font-size: 1.1rem;
+    font-weight: 500;
     color: var(--text-secondary);
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid var(--border-subtle);
-    padding: 0.15rem 0.55rem;
-    border-radius: var(--radius-lg);
     letter-spacing: 0.04em;
-    text-transform: uppercase;
+}
+
+/* Centered, bold, larger, fully saturated white city name */
+.day-city-text {
+    font-size: 1.35rem;
+    font-weight: 850;
+    color: #ffffff;
+    letter-spacing: 0.05em;
 }
 
 /* LOW-PROFILE VERTICAL LIST ROWS */

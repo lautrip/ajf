@@ -482,9 +482,9 @@ function renderTimeline() {
             headerDiv.className = "day-header";
             const city = getCityForDate(day.date);
             if (city) {
-                headerDiv.innerHTML = `<span>${day.dateStr}</span><span class="day-city-label">${city}</span>`;
+                headerDiv.innerHTML = `<span class="day-date-text">${day.dateStr}</span><span class="day-city-text">${city}</span>`;
             } else {
-                headerDiv.textContent = day.dateStr;
+                headerDiv.innerHTML = `<span class="day-date-text">${day.dateStr}</span>`;
             }
             timelineList.appendChild(headerDiv);
             
