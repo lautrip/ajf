@@ -300,11 +300,11 @@ function processCSVText(csvText) {
             const category = categorizeEvent(emojiStr !== "" && col2 !== "" ? emojiStr : eventTitle);
             const id = `evt-${Math.random().toString(36).substr(2, 9)}`;
             
-            // Check for end time in freetime events (e.g. "free time till 13:00 DUSTIN...")
+            // Check for end time in any event (e.g. "meeting till 13:00 DUSTIN...")
             const endTimeMatch = eventTitle.match(/(?:till|hasta(?: las)?|to|until)\s+(\d{1,2}:\d{2})/i);
             let cleanedTitle = eventTitle;
             let eventEndTime = null;
-            if (category === 'freetime' && endTimeMatch) {
+            if (endTimeMatch) {
                 eventEndTime = endTimeMatch[1];
                 cleanedTitle = eventTitle.replace(endTimeMatch[0], '').replace(/\s+/g, ' ').trim();
             }
