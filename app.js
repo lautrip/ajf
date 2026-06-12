@@ -18,7 +18,7 @@ const STATE = {
         search: "",
         person: "",
         showNonArg: false,
-        showRival: true
+        showRival: false
     },
     currentPillEventId: null // Id of the event highlighted in the top status pill
 };
@@ -867,9 +867,9 @@ function clearAllFilters() {
     
     const toggleRival = document.getElementById("toggle-rival");
     if (toggleRival) {
-        toggleRival.checked = true;
+        toggleRival.checked = false;
     }
-    STATE.filters.showRival = true;
+    STATE.filters.showRival = false;
     
     renderTimeline();
 }
