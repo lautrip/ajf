@@ -322,6 +322,27 @@ function processCSVText(csvText) {
         }
         return true;
     });
+
+    // Helper to get time value in minutes for sorting and date parsing
+    const getTimeValue = (timeStr) => {
+        if (!timeStr || typeof timeStr !== 'string') return -1;
+        const clean = timeStr.trim();
+        if (!clean.includes(':')) return -1;
+        const match = clean.match(/^(\d{1,2}):(\d{2})/);
+        if (!match) return 9999;
+        let h = parseInt(match[1], 10);
+        const m = parseInt(match[2], 10);
+        const isPm = /pm/i.test(clean);
+        const isAm = /am/i.test(clean);
+        if (isPm && h < 12) h += 12;
+        if (isAm && h === 12) h = 0;
+        return h * 60 + m;
+    };
+
+    // Sort events within each day chronologically (all-day events first)
+    STATE.days.forEach(day => {
+        day.events.sort((a, b) => getTimeValue(a.time) - getTimeValue(b.time));
+    });
     
     // Flatten global array for highlights calculations
     STATE.allEvents = [];
@@ -329,8 +350,11 @@ function processCSVText(csvText) {
         day.events.forEach(evt => {
             let startDate = null;
             const dayDate = (day.date instanceof Date && !isNaN(day.date)) ? day.date : new Date(2026, 5, 1);
-            if (evt.time && evt.time.includes(':')) {
-                const [h, m] = evt.time.split(':').map(Number);
+            const timeVal = getTimeValue(evt.time);
+            
+            if (timeVal !== -1 && timeVal !== 9999) {
+                const h = Math.floor(timeVal / 60);
+                const m = timeVal % 60;
                 startDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), h, m);
             } else {
                 startDate = new Date(dayDate.getFullYear(), dayDate.getMonth(), dayDate.getDate(), 0, 0);
