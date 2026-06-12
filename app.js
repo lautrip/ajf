@@ -508,7 +508,7 @@ function renderTimeline() {
                     return `__URL_PLACEHOLDER_${urls.length - 1}__`;
                 });
                 
-                let catIcon = "📅";
+                let catIcon = "";
                 let catText = "Evento";
                 
                 if (evt.category === 'flights') {
