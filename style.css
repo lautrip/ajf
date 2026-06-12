@@ -616,10 +616,11 @@ input:checked + .slider:before {
     color: var(--text-secondary);
     padding-left: 6px;
     letter-spacing: -0.02em;
+    white-space: nowrap;
 }
 
 .event-row.has-end-time .row-time {
-    flex: 0 0 88px;
+    flex: 0 0 96px;
 }
 
 .event-row.is-all-day .row-time {
