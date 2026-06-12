@@ -85,7 +85,7 @@ function parseCSV(text) {
 function getSingleMentionedPerson(title) {
     if (!title || typeof title !== 'string') return null;
     const lowerTitle = title.toLowerCase();
-    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin', 'todos'];
     const matched = [];
     
     people.forEach(person => {
@@ -104,7 +104,7 @@ function getSingleMentionedPerson(title) {
 function getMentionedPeople(title) {
     if (!title || typeof title !== 'string') return [];
     const lowerTitle = title.toLowerCase();
-    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin', 'todos'];
     const matched = [];
     
     people.forEach(person => {
@@ -119,7 +119,7 @@ function getMentionedPeople(title) {
 
 function highlightPeopleInTitle(title) {
     if (!title || typeof title !== 'string') return "";
-    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin'];
+    const people = ['lautaro', 'will', 'laureano', 'chango', 'dustin', 'todos'];
     let highlightedTitle = title;
     
     people.forEach(person => {
@@ -462,13 +462,14 @@ function renderTimeline() {
                 const fullEvt = STATE.allEvents.find(e => e.id === evt.id);
                 const isLive = fullEvt && now >= fullEvt.startDate && now < fullEvt.endDate;
                 
-                // Person detection & classes (Only color rows containing DUSTIN)
+                // Person detection & classes (Only color rows containing DUSTIN or TODOS)
                 const mentionedPeople = getMentionedPeople(evt.title);
-                const isMultiplePeople = mentionedPeople.length > 1;
                 const hasDustin = mentionedPeople.includes("dustin");
-                 
+                const hasTodos = mentionedPeople.includes("todos");
+                const isMultiplePeople = mentionedPeople.length > 1 || hasTodos;
+                    
                 let personClass = "";
-                if (hasDustin) {
+                if (hasDustin || hasTodos) {
                     if (isMultiplePeople) {
                         personClass = "person-dustin-group";
                     } else {
