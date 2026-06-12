@@ -38,6 +38,8 @@
     --color-contenido-glow: rgba(6, 182, 212, 0.2);
     --color-freetime: #a78bfa; /* violet-400 */
     --color-freetime-glow: rgba(167, 139, 250, 0.2);
+    --color-comida: #fcd34d; /* yellow-300 */
+    --color-comida-glow: rgba(252, 211, 77, 0.2);
     --color-default: #a1a1aa; /* Neutral Zinc-400 */
     --color-default-glow: rgba(255, 255, 255, 0.03);
 
@@ -612,6 +614,7 @@ input:checked + .slider:before {
 .event-row.cat-fiesta-rival .row-category-bar { background: var(--color-fiesta); }
 .event-row.cat-contenido .row-category-bar { background: var(--color-contenido); }
 .event-row.cat-freetime .row-category-bar { background: var(--color-freetime); }
+.event-row.cat-comida .row-category-bar { background: var(--color-comida); }
 .event-row.cat-default .row-category-bar { background: var(--color-default); }
 
 /* Row columns */

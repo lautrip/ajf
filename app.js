@@ -195,6 +195,9 @@ function categorizeEvent(emojiStr) {
     if (lower.includes('🆓') || lower.includes('freetime') || lower.includes('tiempo libre') || lower.includes('free time') || lower.includes('libre')) {
         return 'freetime';
     }
+    if (lower.includes('🍽️') || lower.includes('🍴') || lower.includes('🍔') || lower.includes('comida') || lower.includes('almuerzo') || lower.includes('cena') || lower.includes('desayuno') || lower.includes('lunch') || lower.includes('dinner') || lower.includes('breakfast') || lower.includes('restaurante') || lower.includes('restaurant') || lower.includes('food') || lower.includes('cafe') || lower.includes('café') || lower.includes('coffee') || lower.includes('merienda')) {
+        return 'comida';
+    }
     
     return 'default';
 }
@@ -555,6 +558,9 @@ function renderTimeline() {
                 } else if (evt.category === 'freetime') {
                     catIcon = "🆓";
                     catText = "Freetime";
+                } else if (evt.category === 'comida') {
+                    catIcon = "🍽️";
+                    catText = "Comida";
                 }
                 
                 let timeHtml = "";
