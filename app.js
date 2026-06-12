@@ -492,6 +492,14 @@ function renderTimeline() {
                     displayTitle = displayTitle.replace(/\s*\([^)]+\)/g, '').trim();
                 }
                 
+                // Extract URLs from displayTitle and replace with placeholders to prevent name highlight collision
+                const urls = [];
+                const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+                displayTitle = displayTitle.replace(urlRegex, (url) => {
+                    urls.push(url);
+                    return `__URL_PLACEHOLDER_${urls.length - 1}__`;
+                });
+                
                 let catIcon = "📅";
                 let catText = "Evento";
                 
@@ -600,10 +608,29 @@ function renderTimeline() {
                 
                 let parenthesesHtml = "";
                 if (parenthesesText) {
-                    parenthesesHtml = `<a href="https://www.google.com/search?q=${encodeURIComponent(parenthesesText)}" target="_blank" class="row-parentheses" rel="noopener noreferrer" title="Buscar locación en Google"><strong>${parenthesesText}</strong></a>`;
+                    const isUrl = /^(https?:\/\/[^\s]+|www\.[^\s]+)$/i.test(parenthesesText);
+                    if (isUrl) {
+                        let href = parenthesesText;
+                        if (!/^https?:\/\//i.test(parenthesesText)) {
+                            href = 'https://' + parenthesesText;
+                        }
+                        parenthesesHtml = `<a href="${href}" target="_blank" class="row-parentheses-link" rel="noopener noreferrer" title="Abrir enlace"><strong>LINK ↗</strong></a>`;
+                    } else {
+                        parenthesesHtml = `<a href="https://www.google.com/search?q=${encodeURIComponent(parenthesesText)}" target="_blank" class="row-parentheses" rel="noopener noreferrer" title="Buscar locación en Google"><strong>${parenthesesText}</strong></a>`;
+                    }
                 }
                 
-                const highlightedTitle = highlightPeopleInTitle(displayTitle);
+                let highlightedTitle = highlightPeopleInTitle(displayTitle);
+                
+                // Restore URLs as LINK hyperlinks
+                urls.forEach((url, idx) => {
+                    let href = url;
+                    if (!/^https?:\/\//i.test(url)) {
+                        href = 'https://' + url;
+                    }
+                    const linkHtml = `<a href="${href}" target="_blank" rel="noopener noreferrer" class="event-title-link">LINK</a>`;
+                    highlightedTitle = highlightedTitle.replace(`__URL_PLACEHOLDER_${idx}__`, linkHtml);
+                });
                 
                 row.innerHTML = `
                     <div class="row-category-bar"></div>

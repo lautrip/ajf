@@ -946,6 +946,38 @@ input:checked + .slider:before {
     text-decoration: underline;
 }
 
+/* Event Title direct links */
+.event-title-link {
+    color: var(--color-flights);
+    text-decoration: underline;
+    font-weight: 700;
+    margin: 0 4px;
+    transition: opacity 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+.event-title-link:hover {
+    opacity: 0.8;
+}
+
+/* Parentheses tags when they are direct links */
+.row-parentheses-link {
+    font-weight: 700;
+    color: var(--color-flights);
+    text-decoration: none;
+    background: rgba(56, 189, 248, 0.08);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    padding: 0.05rem 0.35rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.row-parentheses-link:hover {
+    background: rgba(56, 189, 248, 0.16);
+    border-color: rgba(56, 189, 248, 0.4);
+    transform: translateY(-0.5px);
+}
+
 /* ==========================================================================
    EMPTY STATE & ERROR STYLES
    ========================================================================== */
